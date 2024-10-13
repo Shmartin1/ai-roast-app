@@ -95,7 +95,7 @@ app.post('/upload', upload.single('image'), async (req, res) => {
       roast: roast
     });
 
-      fs.unlinkSync(req.file.path);
+    fs.unlinkSync(req.file.path);
 
   } catch (error) {
     console.error('Error processing upload:', error);
