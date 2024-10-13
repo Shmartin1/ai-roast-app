@@ -1,51 +1,37 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Image, StyleSheet } from 'react-native';
-import * as ImagePicker from 'react-native-image-picker';
+import { View, Text, Button, Image } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { styles } from './styles/HomeScreen.styles';
 
 const HomeScreen = () => {
-    const [imageUri, setImageUri] = useState<string | null>(null);
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
-    const pickImage = async () => {
-        const result = await ImagePicker.launchImageLibrary({
-            mediaType: 'photo',
-            quality: 1,
-        });
+  const pickImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-        if (!result.didCancel && result.assets) {
-            setImageUri(result.assets?.[0]?.uri ?? null);
+    if (!permissionResult.granted) {
+      alert('Permission to access the camera roll is required!');
+      return;
+    }
 
-        }
-    };
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Get Roasted!</Text>
-            <Button title="Upload a Picture" onPress={pickImage} />
-            {imageUri && (
-                <Image source={{ uri: imageUri }} style={styles.image} />
-            )}
-        </View>
-    );
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setImageUri(result.assets[0].uri);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Get Roasted!</Text>
+      <Button title="Upload a Picture" onPress={pickImage} />
+      {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
+    </View>
+  );
 };
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 20,
-    },
-    title: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginBottom: 20,
-    },
-    image: {
-      width: 300,
-      height: 300,
-      marginTop: 20,
-      borderRadius: 150,
-    },
-});
 
 export default HomeScreen;
