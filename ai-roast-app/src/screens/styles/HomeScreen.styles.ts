@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     height: 300,
     marginTop: 20,
     marginBottom: 20,
-    borderRadius: 150,
+    borderRadius: 30, // This creates rounded corners
   },
   analysisContainer: {
     marginTop: 20,
@@ -26,42 +26,24 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     width: '100%',
   },
-  faceContainer: {
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+  roastContainer: {
+    marginTop: 20,
+    padding: 16,
+    backgroundColor: '#ffe6e6',
+    borderRadius: 10,
+    width: '100%',
   },
-  faceTitle: {
+  roastTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  attributeContainer: {
-    marginLeft: 10,
-    marginBottom: 5,
-  },
-  attributeKey: {
-    fontWeight: 'bold',
-  },
-  attributeValue: {
-    marginLeft: 5,
-  },
-  nestedContainer: {
-    marginLeft: 15,
-  },
-  errorText: {
-    color: 'red',
-    marginTop: 10,
-    textAlign: 'center',
+  roastText: {
+    fontSize: 16,
+    fontStyle: 'italic',
   },
   buttonContainer: {
-    marginTop: 10,
+    marginVertical: 10,
     width: '100%',
   },
   button: {
@@ -71,8 +53,28 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    marginTop: 20,
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 10,
+    fontSize: 16,
+  },
+  attributeContainer: {
+    marginBottom: 5,
+  },
+  attributeKey: {
+    fontWeight: 'bold',
+  },
+  attributeValue: {
+    marginLeft: 10,
+  },
+  nestedContainer: {
+    marginLeft: 20,
   },
 });

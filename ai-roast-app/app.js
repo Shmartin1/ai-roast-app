@@ -1,16 +1,10 @@
 require('dotenv').config();
-console.log('Loaded environment variables:', 
-  Object.keys(process.env).reduce((env, key) => {
-    env[key] = key.includes('AWS') ? '[REDACTED]' : process.env[key];
-    return env;
-  }, {})
-);
-
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
 const AWS = require('aws-sdk');
 const fs = require('fs');
+const axios = require('axios');
 
 const app = express();
 
@@ -27,6 +21,28 @@ const s3 = new AWS.S3();
 const rekognition = new AWS.Rekognition();
 
 const upload = multer({ dest: 'uploads/' });
+
+async function generateRoast(faceDetails) {
+  const prompt = `Given the following facial analysis from AWS Rekognition, come up with a funny and light-hearted roast. Be creative but not overly mean: ${JSON.stringify(faceDetails)}`;
+
+  try {
+    const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 150
+    }, {
+      headers: {
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    return response.data.choices[0].message.content.trim();
+  } catch (error) {
+    console.error('Error generating roast:', error);
+    throw error;
+  }
+}
 
 app.post('/upload', upload.single('image'), async (req, res) => {
   console.log('Upload route hit');
@@ -68,15 +84,16 @@ app.post('/upload', upload.single('image'), async (req, res) => {
 
     const rekognitionResponse = await rekognition.detectFaces(rekognitionParams).promise();
 
-    console.log('Full Rekognition response:', JSON.stringify(rekognitionResponse, null, 2));
+    const roast = await generateRoast(rekognitionResponse.FaceDetails);
 
     res.json({
       message: 'Image uploaded and analyzed successfully',
       analysis: rekognitionResponse.FaceDetails,
-      imageUrl: s3Response.Location
+      imageUrl: s3Response.Location,
+      roast: roast
     });
 
-    fs.unlinkSync(req.file.path);
+        fs.unlinkSync(req.file.path);
 
   } catch (error) {
     console.error('Error processing upload:', error);

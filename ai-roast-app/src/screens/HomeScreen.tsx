@@ -6,58 +6,9 @@ import { RootState, AppDispatch } from '../store/store';
 import { setImageUri, uploadImage, clearAnalysis } from '../store/slices/faceAnalysisSlice';
 import { styles } from './styles/HomeScreen.styles';
 
-const AnalysisDisplay = ({ analysis }: { analysis: any[] | null }) => {
-  if (!analysis) return null;
-
-  const renderValue = (value: any): React.ReactNode => {
-    if (typeof value === 'object' && value !== null) {
-      if (Array.isArray(value)) {
-        return (
-          <View style={styles.nestedContainer}>
-            {value.map((item, index) => (
-              <Text key={index}>{renderValue(item)}</Text>
-            ))}
-          </View>
-        );
-      }
-      return renderObject(value);
-    }
-    return value.toString();
-  };
-
-  const renderObject = (obj: any) => {
-    return (
-      <View style={styles.nestedContainer}>
-        {Object.entries(obj).map(([key, value]) => (
-          <View key={key} style={styles.attributeContainer}>
-            <Text>
-              <Text style={styles.attributeKey}>{key}:</Text>
-              <Text style={styles.attributeValue}>
-                {typeof value === 'object' && value !== null ? '\n' : ` ${renderValue(value)}`}
-              </Text>
-            </Text>
-            {typeof value === 'object' && value !== null && renderValue(value)}
-          </View>
-        ))}
-      </View>
-    );
-  };
-
-  return (
-    <View style={styles.analysisContainer}>
-      {analysis.map((face: any, index: number) => (
-        <View key={index} style={styles.faceContainer}>
-          <Text style={styles.faceTitle}>Face {index + 1}</Text>
-          {renderObject(face)}
-        </View>
-      ))}
-    </View>
-  );
-};
-
 const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { imageUri, analysis, loading, error } = useSelector((state: RootState) => state.faceAnalysis);
+  const { imageUri, roast, loading, error } = useSelector((state: RootState) => state.faceAnalysis);
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -84,13 +35,14 @@ const HomeScreen = () => {
       return;
     }
 
-    dispatch(uploadImage(imageUri)).unwrap()
+    dispatch(uploadImage(imageUri))
+      .unwrap()
       .then(() => {
         console.log('Image uploaded and analyzed successfully');
       })
-      .catch((error: any) => {
+      .catch((error: string) => {
         console.error('Error uploading image:', error);
-        Alert.alert('Error', 'An error occurred while uploading and analyzing the image.');
+        Alert.alert('Error', error);
       });
   };
 
@@ -117,7 +69,12 @@ const HomeScreen = () => {
 
       {error && <Text style={styles.errorText}>{error}</Text>}
 
-      <AnalysisDisplay analysis={analysis} />
+      {roast && (
+        <View style={styles.roastContainer}>
+          <Text style={styles.roastTitle}>AI Roast:</Text>
+          <Text style={styles.roastText}>{roast}</Text>
+        </View>
+      )}
     </ScrollView>
   );
 };
