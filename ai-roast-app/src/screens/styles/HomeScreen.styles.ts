@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     height: 300,
     marginTop: 20,
     marginBottom: 20,
-    borderRadius: 30, // This creates rounded corners
+    borderRadius: 30,
   },
   analysisContainer: {
     marginTop: 20,
