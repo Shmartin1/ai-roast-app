@@ -83,6 +83,7 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     };
 
     const rekognitionResponse = await rekognition.detectFaces(rekognitionParams).promise();
+    
     console.log('Full Rekognition response:', JSON.stringify(rekognitionResponse, null, 2));
     
     const roast = await generateRoast(rekognitionResponse.FaceDetails);
