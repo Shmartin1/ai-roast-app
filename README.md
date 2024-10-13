@@ -86,4 +86,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-Built with ❤️ and a sense of humor by *Josh Martin*
+Built by *Josh Martin*
