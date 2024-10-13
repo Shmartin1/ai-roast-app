@@ -55,4 +55,24 @@ export const styles = StyleSheet.create({
   nestedContainer: {
     marginLeft: 15,
   },
+  errorText: {
+    color: 'red',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    marginTop: 10,
+    width: '100%',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
