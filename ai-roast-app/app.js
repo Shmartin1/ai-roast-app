@@ -12,12 +12,6 @@ const cors = require('cors');
 const AWS = require('aws-sdk');
 const fs = require('fs');
 
-// Log environment variables at startup
-console.log('Environment variables:');
-console.log('AWS_REGION:', process.env.AWS_REGION);
-console.log('S3_BUCKET_NAME:', process.env.S3_BUCKET_NAME);
-// Don't log sensitive information like access keys
-
 const app = express();
 
 app.use(cors());
@@ -32,10 +26,8 @@ AWS.config.update({
 const s3 = new AWS.S3();
 const rekognition = new AWS.Rekognition();
 
-// Configure multer for file uploads
 const upload = multer({ dest: 'uploads/' });
 
-// Upload route
 app.post('/upload', upload.single('image'), async (req, res) => {
   console.log('Upload route hit');
   
@@ -44,7 +36,6 @@ app.post('/upload', upload.single('image'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Check if S3 bucket name is set
     if (!process.env.S3_BUCKET_NAME) {
       throw new Error('S3_BUCKET_NAME is not set in environment variables');
     }
@@ -77,7 +68,6 @@ app.post('/upload', upload.single('image'), async (req, res) => {
 
     const rekognitionResponse = await rekognition.detectFaces(rekognitionParams).promise();
 
-    // Log the full structure of the response
     console.log('Full Rekognition response:', JSON.stringify(rekognitionResponse, null, 2));
 
     res.json({
@@ -86,7 +76,6 @@ app.post('/upload', upload.single('image'), async (req, res) => {
       imageUrl: s3Response.Location
     });
 
-    // Clean up the temporary file
     fs.unlinkSync(req.file.path);
 
   } catch (error) {
